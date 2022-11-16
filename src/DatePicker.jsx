@@ -1,40 +1,42 @@
-import React from 'react';
-import { DayPickerRangeController } from 'react-dates';
-import moment from 'moment';
+import React from "react";
+import {
+  DayPickerRangeController,
+  DayPickerSingleDateController,
+} from "react-dates";
+import moment from "moment";
 
 export default class DatePicker extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      startDate: moment(),
-      endDate: moment().subtract(1, 'day'),
-      focused: false,
-    };
-  }
-
-  dateChange = ({ startDate, endDate }) => {
-    this.setState({ startDate, endDate });
-    console.log({ startDate, endDate });
+  state = {
+    startDate: moment(),
+    endDate: moment(),
+    focusedInput: null,
+    focused: null,
+    date: moment(),
   };
 
-  focusChange = (focusedInput) => {
+  onDateChange = (date) => {
+    this.setState({ date });
+  };
+
+  onFocusChange = () => {
+    // Force the focused states to always be truthy so that date is always selectable
+    this.setState({ focused: true });
+  };
+
+  focusedInput = (focusedInput) => {
+    console.log(`focusedInput`, focusedInput);
     this.setState({ focusedInput });
-    console.log(focusedInput);
   };
 
   render() {
+    const { focused, date } = this.state;
     console.log(this.state.startDate);
     return (
-      <DayPickerRangeController
-        startDate={this.state.startDate} // momentPropTypes.momentObj or null,
-        startDateId='your_unique_start_date_id' // PropTypes.string.isRequired,
-        endDate={this.state.endDate} // momentPropTypes.momentObj or null,
-        endDateId='your_unique_end_date_id' // PropTypes.string.isRequired,
-        // onDatesChange={({ startDate, endDate }) =>this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
-        onDatesChange={this.dateChange} // PropTypes.func.isRequired,
-        focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-        // onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
-        onFocusChange={this.focusChange} // PropTypes.func.isRequired,
+      <DayPickerSingleDateController
+        onDateChange={this.onDateChange}
+        onFocusChange={this.onFocusChange}
+        focused={focused}
+        date={date}
       />
     );
   }
